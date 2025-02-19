@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Update doctor Profile - PH HealthCare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Update doctor Profile</h2>
+
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Update doctor Profile</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" action="{% url "update_doctor_profile" doctor.id %}">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+{% endblock %}

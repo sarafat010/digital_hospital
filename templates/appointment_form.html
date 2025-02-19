@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Appointment slot list - PH HealthCare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Appointment slot list</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        {% for slot in slots %}
+        <div class="card mb-4">
+            <div class="card-body">
+                
+                    {{ slot.doctor.user.get_full_name }} <br>
+                    {{ slot.start_time}} - {{ slot.end_time}} <br>
+                    {{ slot.day }}, {{slot.date}}
+                
+            </div>
+        </div>
+        {% empty %}
+        <div class="card mb-4">
+            <div class="card-body">
+                <p class="text-center">No appointments slot.</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Appointment slot</h5>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+{% endblock %}

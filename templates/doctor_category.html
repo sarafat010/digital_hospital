@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ cat_name }} Doctors - PH HealthCare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">{{ cat_name }} Doctors</h2>
+
+<div class="row g-4">
+    {% for doctor in doctors %}
+        <div class="col-md-4">
+            {% include 'doctor_card.html' with doctor=doctor %}
+        </div>
+    {% empty %}
+        <div class="col">
+            <p class="text-center">No doctors available at the moment.</p>
+        </div>
+    {% endfor %}
+</div>
+<br><br><br><br><br><br><br><br>
+{% endblock %}
+

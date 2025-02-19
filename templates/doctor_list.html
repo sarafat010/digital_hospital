@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% comment %} {% extends 'base.html' %}
+
+{% block title %}Our Doctors - PH HealthCare{% endblock %}
+
+{% block content %}
+
+<div class="container mt-3">
+    <div class="d-flex flex-row gap-2">
+        {% for specialization in specializations %}
+            <div class="p-2 bg-light border">
+                <a href="{% url 'doctor_category' specialization.name %}" class="btn btn-primary">{{ specialization.name }}</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<h2 class="mb-4">Our Doctors</h2>
+
+<div class="row g-4">
+    {% for doctor in doctors %}
+        <div class="col-md-4">
+            {% include 'doctor_card.html' with doctor=doctor %}
+        </div>
+    {% empty %}
+        <div class="col">
+            <p class="text-center">No doctors available at the moment.</p>
+        </div>
+    {% endfor %}
+</div>
+<br><br><br><br><br><br><br><br>
+{% endblock %}
+
+ {% endcomment %}
+
+
+
+
+{% block title %}Our Doctors - PH HealthCare{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+    <!-- Specializations Filter -->
+    <div class="mb-5">
+        <h3 class="mb-4 text-primary">Find by Specialty</h3>
+        <div class="d-flex flex-wrap gap-2">
+            {% for specialization in specializations %}
+                <a href="{% url 'doctor_category' specialization.name %}" 
+                   class="btn btn-outline-primary rounded-pill px-4 py-2">
+                    {{ specialization.name }}
+                </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Doctors List -->
+    <h2 class="mb-4 display-5 fw-bold text-dark">Meet Our Expert Team</h2>
+    
+    {% if doctors %}
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for doctor in doctors %}
+        <div class="col">
+            <div class="card h-100 shadow-sm border-0 hover-shadow">
+                <div class="card-body p-4">
+                    {% include 'doctor_card.html' with doctor=doctor %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-5 my-5">
+        <div class="empty-state">
+            <i class="bi bi-person-x fs-1 text-muted"></i>
+            <h3 class="mt-3 fw-normal">No Doctors Available</h3>
+            <p class="text-muted">Please check back later or try another specialty.</p>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endblock %}

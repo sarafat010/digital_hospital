@@ -1,0 +1,84 @@
+{% comment %} 
+<div class="card h-100">
+    <div class="card-body">
+        {% if doctor.profile_picture %}
+            <img src="{{ doctor.profile_picture.url }}" class="img-thumbnail rounded-squire" alt="Profile Image" width="150" height="150">
+            {% else %}
+            <img src="https://via.placeholder.com/150" class="img-thumbnail rounded-squire" alt="Default Profile Image">
+        {% endif %}
+    
+        <h5 class="card-title">Dr. {{ doctor.user.get_full_name }}</h5> 
+        <h6 class="card-subtitle mb-2 text-muted"><strong>Specialized:</strong> {% for name in doctor.specialization.all %}
+            {{ name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </h6>
+        <p class="card-text">
+            
+            <strong>Qualification:</strong> {{ doctor.qualifications }}<br>
+            <strong>Consultation Fee:</strong> ${{ doctor.consultation_fee }}
+        </p>
+        <a href="{% url 'doctor_details' doctor.id %}" class="btn btn-outline-success btn-lg px-4">View details</a>
+    </div>
+</div>
+
+ {% endcomment %}
+
+ <div class="card h-100 border-0 shadow-hover">
+    <div class="card-body p-4">
+        <div class="d-flex align-items-start gap-4">
+            <!-- Profile Image -->
+            <div class="position-relative">
+                {% if doctor.profile_picture %}
+                <img src="{{ doctor.profile_picture.url }}" 
+                     class="rounded-circle object-fit-cover border-primary"
+                     alt="Dr. {{ doctor.user.get_full_name }}"
+                     width="120" 
+                     height="120">
+                {% else %}
+                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" 
+                     style="width: 120px; height: 120px;">
+                    <i class="bi bi-person-heart fs-1 text-secondary"></i>
+                </div>
+                {% endif %}
+                <div class="status-indicator bg-success"></div>
+            </div>
+
+            <!-- Doctor Info -->
+            <div class="flex-grow-1">
+                <h3 class="h5 mb-2 fw-bold text-primary">Dr. {{ doctor.user.get_full_name }}</h3>
+                
+                <!-- Specializations -->
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    {% for spec in doctor.specialization.all %}
+                    <span class="badge rounded-pill bg-primary-subtle text-primary fs-7">
+                        {{ spec }}
+                    </span>
+                    {% endfor %}
+                </div>
+
+                <!-- Details -->
+                <ul class="list-unstyled mb-4">
+                    {% if doctor.qualifications %}
+                    <li class="d-flex align-items-center gap-2 mb-2">
+                        <i class="bi bi-mortarboard text-secondary"></i>
+                        {{ doctor.qualifications|truncatechars:40 }}
+                    </li>
+                    {% endif %}
+                    <li class="d-flex align-items-center gap-2">
+                        <i class="bi bi-cash-coin text-secondary"></i>
+                        <strong>${{ doctor.consultation_fee }}</strong> consultation
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Action Button -->
+        <div class="text-end mt-3">
+            <a href="{% url 'doctor_details' doctor.id %}" 
+               class="btn btn-primary px-4 py-2 rounded-1">
+               View Details
+               <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+    </div>
+</div>

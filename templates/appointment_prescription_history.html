@@ -1,0 +1,65 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Appointment history - PH HealthCare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Appointment history</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">My Appointments</h5>
+            </div>
+            <div class="card-body">
+                {% for appointment in appointments %}
+                    {% include 'appointment_card.html' with appointment=appointment %}
+                {% empty %}
+                    <p class="text-center">No appointments found.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Previous Prescriptions</h5>
+            </div>
+            <div class="card-body">
+                {% for i in prescriptions %}
+                    {% for prescription in i %}
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <h6 class="card-subtitle mb-2 text-muted">
+                                    Dr. {{ prescription.appointment.doctor.user.get_full_name }}
+                                </h6>
+                                <p class="card-text">
+                                    <ul>
+                            
+                                        <li>
+                                            <strong>Patient:</strong> {{ prescription.appointment.patient.user.get_full_name }}<br>
+                                            <strong>Created at:</strong> {{ prescription.created_at }}<br>
+                                            
+                                        </li>
+                                </ul>
+                                </p>
+                                {% if prescription.appointment.id %}
+                                    <a href="{% url 'prescription_detail' prescription.appointment.id %}" class="btn btn-sm btn-primary">
+                                        View Details
+                                    </a>
+                                {% else %}
+                                    <span class="text-danger">No appointment ID found.</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% empty %}
+                    <p class="text-center">No prescriptions found.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    
+</div>
+{% endblock %}

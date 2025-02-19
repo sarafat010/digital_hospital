@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Reset Password form{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Reset Password form</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Enter your otp</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{% url "otp_view" otp email%}">
+                    {% csrf_token %}
+                    <input type="text" name="otp" placeholder="enter your otp">
+                    
+                    <button type="submit" class="btn btn-secondary">submit</button>
+                    
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+{% endblock %}

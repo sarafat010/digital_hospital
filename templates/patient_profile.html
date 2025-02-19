@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% comment %} {% block content %}
+
+<!-- Header-->
+
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Your Profile</h1>
+            <p class="lead fw-normal text-white-50 mb-0">View and update your profile information.</p>
+        </div>
+    </div>
+</header>
+
+<!-- Profile Section -->
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <!-- Display Profile Picture -->
+            {% if profile.profile_picture %}
+            <img src="{{ profile.profile_picture.url }}" class="img-thumbnail rounded-circle" alt="Profile Image" width="150" height="150">
+            {% else %}
+            <img src="https://via.placeholder.com/150" class="img-thumbnail rounded-circle" alt="Default Profile Image">
+            {% endif %}
+        </div>
+
+        <div class="col-md-8">
+            <!-- Display Profile Details -->
+            <h3>{{ profile.patient.user.username }}</h3>
+            <p><strong>First Name:</strong> {{ profile.patient.user.first_name }}</p>
+            <p><strong>Last Name:</strong> {{ profile.patient.user.last_name }}</p>
+            <p><strong>Email:</strong> {{ profile.patient.user.email }}</p>
+            <p><strong>Phone:</strong> {{ profile.patient.user.phone_number }}</p>
+            <p><strong>Date of birth:</strong> {{ profile.patient.date_of_birth }}</p>
+            <p><strong>Gender:</strong> {{ profile.patient.gender }}</p>
+            <p><strong>Blood Group:</strong> {{ profile.patient.blood_group }}</p>
+            <p><strong>Medical history:</strong> {{ profile.patient.medical_history }}</p>
+            <p><strong>Address 1:</strong> {{ profile.address_1 }}</p>
+            <p><strong>Address 2:</strong> {{ profile.address_2 }}</p>
+            <p><strong>City:</strong> {{ profile.city }}</p>
+            <p><strong>Country:</strong> {{ profile.country }}</p>
+        </div>
+    </div>
+
+    <!-- Update Profile Button -->
+    {% if user.is_authenticated and user.id == profile.patient.user.id %}
+    <div class="row my-4">
+        <div class="col text-center">
+            <a href="{% url 'update_patient_profile' user.id %}" class="btn btn-primary">Edit Profile</a>
+            <a href="{% url 'update_password' %}" class="btn btn-secondary">Change Password</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock %} {% endcomment %}
+
+
+
+
+{% block content %}
+
+<!-- Header -->
+<header class="bg-primary py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Your Profile</h1>
+            <p class="lead fw-normal text-white-80 mb-0">Manage your personal information and preferences</p>
+        </div>
+    </div>
+</header>
+
+<!-- Profile Section -->
+<div class="container my-5">
+    <div class="card shadow-lg">
+        <div class="card-body">
+            <div class="row">
+                <!-- Profile Picture Column -->
+                <div class="col-md-4 text-center border-end">
+                    <div class="mb-4">
+                        {% if profile.profile_picture %}
+                        <img src="{{ profile.profile_picture.url }}" 
+                             class="img-thumbnail rounded-circle shadow-sm" 
+                             alt="Profile Image" 
+                             width="200" 
+                             height="200">
+                        {% else %}
+                        <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center" 
+                             style="width: 200px; height: 200px;">
+                            <i class="bi bi-person-circle fs-1 text-muted"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    {% if user.is_authenticated and user.id == profile.patient.user.id %}
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'update_patient_profile' user.id %}" 
+                           class="btn btn-outline-primary">
+                            <i class="bi bi-pencil-fill"></i> Edit Profile
+                        </a>
+                        <a href="{% url 'update_password' %}" 
+                           class="btn btn-outline-secondary">
+                            <i class="bi bi-shield-lock"></i> Change Password
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Profile Details Column -->
+                <div class="col-md-8">
+                    <div class="row g-4">
+                        <!-- Personal Information -->
+                        <div class="col-12">
+                            <h3 class="mb-4 border-bottom pb-2">
+                                {{ profile.patient.user.get_full_name }}
+                                <small class="text-muted fs-5">@{{ profile.patient.user.username }}</small>
+                            </h3>
+                        </div>
+
+                        <!-- Contact Info -->
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0">
+                                <div class="card-body">
+                                    <h5 class="card-title text-muted mb-4">
+                                        <i class="bi bi-person-lines-fill"></i> Contact Information
+                                    </h5>
+                                    <dl class="row">
+                                        <dt class="col-sm-4">Email</dt>
+                                        <dd class="col-sm-8">{{ profile.patient.user.email }}</dd>
+
+                                        <dt class="col-sm-4">Phone</dt>
+                                        <dd class="col-sm-8">{{ profile.patient.user.phone_number|default:"-" }}</dd>
+
+                                        <dt class="col-sm-4">Date of Birth</dt>
+                                        <dd class="col-sm-8">{{ profile.patient.date_of_birth|date:"M d, Y" }}</dd>
+
+                                        <dt class="col-sm-4">Gender</dt>
+                                        <dd class="col-sm-8">
+                                            <span class="badge bg-info">
+                                                {{ profile.patient.gender }}
+                                            </span>
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Medical Info -->
+                        <div class="col-md-6">
+                            <div class="card h-100 border-0">
+                                <div class="card-body">
+                                    <h5 class="card-title text-muted mb-4">
+                                        <i class="bi bi-heart-pulse"></i> Medical Information
+                                    </h5>
+                                    <dl class="row">
+                                        <dt class="col-sm-4">Blood Group</dt>
+                                        <dd class="col-sm-8">
+                                            <span class="badge bg-danger">
+                                                {{ profile.patient.blood_group }}
+                                            </span>
+                                        </dd>
+
+                                        <dt class="col-sm-4">Medical History</dt>
+                                        <dd class="col-sm-8">
+                                            {{ profile.patient.medical_history|default:"No medical history recorded"|linebreaks }}
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Address Info -->
+                        <div class="col-12">
+                            <div class="card border-0">
+                                <div class="card-body">
+                                    <h5 class="card-title text-muted mb-4">
+                                        <i class="bi bi-geo-alt-fill"></i> Address Information
+                                    </h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="mb-1">{{ profile.address_1 }}</p>
+                                            {% if profile.address_2 %}
+                                            <p class="mb-1">{{ profile.address_2 }}</p>
+                                            {% endif %}
+                                            <p class="mb-1">{{ profile.city }}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-1">{{ profile.country }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

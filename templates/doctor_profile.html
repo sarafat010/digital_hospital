@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+{% comment %} {% block content %}
+
+<!-- Header-->
+
+<header class="bg-dark py-5">
+    <div class="container px-4 px-lg-5 my-5">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bolder">Your Profile</h1>
+            <p class="lead fw-normal text-white-50 mb-0">View and update your profile information.</p>
+        </div>
+    </div>
+</header>
+
+<!-- Profile Section -->
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <!-- Display Profile Picture -->
+            {% if doctor.profile_picture %}
+            <img src="{{ doctor.profile_picture.url }}" class="img-thumbnail rounded-circle" alt="Profile Image" width="150" height="150">
+            {% else %}
+            <img src="https://via.placeholder.com/150" class="img-thumbnail rounded-circle" alt="Default Profile Image">
+            {% endif %}
+        </div>
+
+        <div class="col-md-8">
+            <!-- Display Profile Details -->
+            <h3>{{ profile.user.username }}</h3>
+            <p><strong>First Name:</strong> {{ doctor.user.first_name }}</p>
+            <p><strong>Last Name:</strong> {{ doctor.user.last_name }}</p>
+            <p><strong>Email:</strong> {{ doctor.user.email }}</p>
+            <p><strong>Phone:</strong> {{ doctor.user.phone_number }}</p>
+            <p><strong>Specialization:</strong> {% for name in doctor.specialization.all %}
+                {{ name }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+            <p><strong>Qualification:</strong> {{ doctor.qualifications }}</p>
+            <p><strong>Consultation Fee:</strong> {{ doctor.consultation_fee }}</p>
+        </div>
+    </div>
+
+    <!-- Update Profile Button -->
+    {% if user.is_authenticated and user.id == doctor.user.id %}
+    <div class="row my-4">
+        <div class="col text-center">
+            <a href="{% url 'update_doctor_profile' doctor.id %}" class="btn btn-primary">Edit Profile</a>
+            <a href="{% url 'update_password' %}" class="btn btn-secondary">Change Password</a>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+
+{% endblock %} {% endcomment %}
+
+
+
+{% block content %}
+
+<!-- Header -->
+<header class="bg-gradient-primary-to-secondary py-7">
+    <div class="container px-5 py-6">
+        <div class="text-center text-white">
+            <h1 class="display-4 fw-bold mb-3">Doctor Profile</h1>
+            <div class="avatar-container mb-4">
+                {% if doctor.profile_picture %}
+                <img src="{{ doctor.profile_picture.url }}" 
+                     class="avatar-img shadow-lg" 
+                     alt="Dr. {{ doctor.user.get_full_name }}">
+                {% else %}
+                <div class="avatar-placeholder shadow-lg">
+                    <i class="bi bi-person-heart fs-1 text-white"></i>
+                </div>
+                {% endif %}
+            </div>
+            <h2 class="h1 mb-2">Dr. {{ doctor.user.get_full_name }}</h2>
+            <div class="d-flex justify-content-center gap-2 flex-wrap">
+                {% for spec in doctor.specialization.all %}
+                <span class="badge bg-white text-primary rounded-pill px-3 py-2">
+                    {{ spec }}
+                </span>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Profile Section -->
+<section class="py-5">
+    <div class="container px-5">
+        <div class="row gx-5 justify-content-center">
+            <!-- Main Card -->
+            <div class="col-lg-8">
+                <div class="card shadow-lg">
+                    <div class="card-body p-4 p-md-5">
+                        
+                        <!-- Professional Details -->
+                        <div class="row g-4 mb-5">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="bi bi-award fs-2 text-primary"></i>
+                                    <div>
+                                        <h3 class="h5 mb-0">Qualifications</h3>
+                                        <p class="mb-0 text-muted">{{ doctor.qualifications }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="bi bi-cash fs-2 text-primary"></i>
+                                    <div>
+                                        <h3 class="h5 mb-0">Consultation Fee</h3>
+                                        <p class="mb-0 text-muted">${{ doctor.consultation_fee }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Personal Information -->
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <h3 class="h5 mb-4">Contact Information</h3>
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="d-flex align-items-center gap-2 mb-3">
+                                                <i class="bi bi-envelope text-primary"></i>
+                                                {{ doctor.user.email }}
+                                            </li>
+                                            <li class="d-flex align-items-center gap-2">
+                                                <i class="bi bi-telephone text-primary"></i>
+                                                {{ doctor.user.phone_number|default:"Not provided" }}
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="card border-0 bg-light">
+                                    <div class="card-body">
+                                        <h3 class="h5 mb-4">Professional Details</h3>
+                                        <dl class="row mb-0">
+                                            <dt class="col-sm-5">Experience</dt>
+                                            <dd class="col-sm-7">{{ doctor.experience_years|default:"0" }} years</dd>
+                                            
+                                            <dt class="col-sm-5">Last Active</dt>
+                                            <dd class="col-sm-7">2 hours ago</dd>
+                                            
+                                            <dt class="col-sm-5">Patients</dt>
+                                            <dd class="col-sm-7">1,234 treated</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        {% if user.is_authenticated and user.id == doctor.user.id %}
+                        <div class="d-flex gap-3 mt-5 justify-content-center">
+                            <a href="{% url 'update_doctor_profile' doctor.id %}" 
+                               class="btn btn-primary px-4 py-3 d-flex align-items-center gap-2">
+                               <i class="bi bi-pencil-square"></i>
+                               Edit Profile
+                            </a>
+                            <a href="{% url 'update_password' %}" 
+                               class="btn btn-outline-secondary px-4 py-3 d-flex align-items-center gap-2">
+                               <i class="bi bi-shield-lock"></i>
+                               Change Password
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4 mt-5 mt-lg-0">
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <h3 class="h5 mb-4">Quick Actions</h3>
+                        <div class="d-grid gap-2">
+                            <a href="#" class="btn btn-outline-primary text-start d-flex justify-content-between align-items-center">
+                                Appointment History
+                                <i class="bi bi-clock-history"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-primary text-start d-flex justify-content-between align-items-center">
+                                Patient Reviews
+                                <i class="bi bi-chat-dots"></i>
+                            </a>
+                            <a href="#" class="btn btn-outline-primary text-start d-flex justify-content-between align-items-center">
+                                Availability
+                                <i class="bi bi-calendar-check"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .bg-gradient-primary-to-secondary {
+        background: linear-gradient(135deg, #2c3e50, #3498db);
+    }
+    
+    .avatar-img {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid white;
+    }
+    
+    .avatar-placeholder {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 3px solid white;
+    }
+    
+    .card {
+        border-radius: 1rem;
+        transition: transform 0.3s ease;
+    }
+    
+    .card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+
+{% endblock %}

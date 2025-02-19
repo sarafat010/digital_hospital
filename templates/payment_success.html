@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-success">
+        <h4>Payment Successful! ✅</h4>
+        <p>Appointment ID: {{ appointment.id }}</p>
+        <p>Doctor: {{ appointment.doctor.user.get_full_name }}</p>
+        <p>Amount: ৳{{ appointment.consultation_fee }}</p>
+        <a href="{% url 'patient_dashboard' %}" class="btn btn-primary">
+            Return to Dashboard
+        </a>
+    </div>
+</div>
+{% endblock %}

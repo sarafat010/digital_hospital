@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% comment %} {% block title %}Our Doctors - PH HealthCare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Search Doctors</h2>
+
+<div class="row g-4">
+    <div class="card h-10">
+        <div class="card-body"> 
+            <form action="{% url "search_doctor" %}" method="POST">
+                {% csrf_token %}
+                <input type="text" name="searched" placeholder="search here">
+                    
+                <button type="submit" class="btn btn-secondary">search</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="row g-4">
+    {% for doctor in doctors %}
+        <div class="col-md-4">
+            {% include 'doctor_card.html' with doctor=doctor %}
+        </div>
+    {% empty %}
+        <div class="col">
+            <p class="text-center">Nothig mached with your search.</p>
+        </div>
+    {% endfor %}
+</div>
+<br><br><br><br><br><br><br><br>
+{% endblock %} {% endcomment %}
+
+
+
+
+{% block title %}Find Doctors - PH HealthCare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Search Section -->
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-search me-2"></i>Find Your Doctor</h3>
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'search_doctor' %}" method="POST" class="row g-3 align-items-center">
+                        {% csrf_token %}
+                        <div class="col-md-8">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-user-md text-primary"></i>
+                                </span>
+                                <input type="text" name="searched" class="form-control form-control-lg" 
+                                       placeholder="Search by name, specialty, or department">
+                            </div>
+                        </div>
+                        <div class="col-md-1">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search">Search</i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Results Section -->
+    {% if doctors %}
+    <h3 class="mb-4">Available Doctors</h3>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for doctor in doctors %}
+        <div class="col">
+            {% include 'doctor_card.html' with doctor=doctor %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-info shadow text-center py-4" role="alert">
+                <i class="fas fa-exclamation-circle fa-2x mb-3"></i>
+                <h4 class="alert-heading">No Matching Doctors Found</h4>
+                <p class="mb-0">Try adjusting your search filters or browse our full directory.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

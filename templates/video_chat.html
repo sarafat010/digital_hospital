@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Chat</title>
+</head>
+<body>
+    <div id="video-chat">
+        <video id="local-video" autoplay muted></video>
+        <video id="remote-video" autoplay></video>
+        <button id="start-call">Start Call</button>
+        <button id="end-call">End Call</button>
+    </div>
+
+    <script>
+        const roomId = {{ room_id }};  // Pass room_id from Django view
+        const localVideo = document.getElementById('local-video');
+        const remoteVideo = document.getElementById('remote-video');
+        const startCallButton = document.getElementById('start-call');
+        const endCallButton = document.getElementById('end-call');
+
+        let localStream;
+        let peerConnection;
+        const signalingSocket = new WebSocket(
+            `ws://${window.location.host}/ws/video_chat/${roomId}/`
+        );
+
+        // WebRTC configuration
+        const configuration = {
+            iceServers: [
+                { urls: 'stun:stun.l.google.com:19302' },  // Google's public STUN server
+            ],
+        };
+
+        // Start call
+        startCallButton.onclick = async () => {
+            localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            localVideo.srcObject = localStream;
+
+            peerConnection = new RTCPeerConnection(configuration);
+
+            // Add local stream to peer connection
+            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+            // Handle remote stream
+            peerConnection.ontrack = (event) => {
+                remoteVideo.srcObject = event.streams[0];
+            };
+
+            // Handle ICE candidates
+            peerConnection.onicecandidate = (event) => {
+                if (event.candidate) {
+                    signalingSocket.send(JSON.stringify({
+                        type: 'ice_candidate',
+                        candidate: event.candidate,
+                    }));
+                }
+            };
+
+            // Create and send offer
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer);
+            signalingSocket.send(JSON.stringify({
+                type: 'offer',
+                offer: offer,
+            }));
+        };
+
+        // End call
+        endCallButton.onclick = () => {
+            if (peerConnection) {
+                peerConnection.close();
+                peerConnection = null;
+            }
+            localStream.getTracks().forEach(track => track.stop());
+            localVideo.srcObject = null;
+            remoteVideo.srcObject = null;
+        };
+
+        // Handle signaling data from server
+        signalingSocket.onmessage = async (event) => {
+            const data = JSON.parse(event.data);
+
+            if (data.type === 'offer') {
+                if (!peerConnection) {
+                    await startCall();
+                }
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(data.offer));
+
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+                signalingSocket.send(JSON.stringify({
+                    type: 'answer',
+                    answer: answer,
+                }));
+            } else if (data.type === 'answer') {
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(data.answer));
+            } else if (data.type === 'ice_candidate') {
+                await peerConnection.addIceCandidate(new RTCIceCandidate(data.candidate));
+            }
+        };
+    </script>
+</body>
+</html>

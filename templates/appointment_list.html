@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% comment %} {% block title %}Our Doctors - PH HealthCare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Your appointments</h2>
+
+<div class="row g-4">
+    {% if appointments %}
+        <ul>
+            {% for appointment in appointments %}
+                <li>
+                    <strong>Patient:</strong> {{ appointment.patient.user.username }}<br>
+                    <strong>Doctor:</strong> {{ appointment.doctor.user.username }}<br>
+                    <strong>Slot:</strong> {{ appointment.slot.start_time }} to {{ appointment.slot.end_time }}<br>
+                    <strong>Status:</strong> {{ appointment.status }}<br>
+                    <strong>Fee:</strong> {{ appointment.consultation_fee }}<br>
+                    <strong>Payment Status:</strong> {{ appointment.payment_status|yesno:"Paid,Unpaid" }}<br>
+                </li>
+                <a href="{% url "update_appointment" appointment.id %}" class="btn btn-success">Update Appointment</a>
+                <td>
+                    {% if not appointment.payment_status %}
+                    <form action="{% url 'initiate_payment' appointment.id %}" method="POST">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-primary">
+                            Pay Now (৳{{ appointment.consultation_fee }})
+                        </button>
+                    </form>
+                    {% else %}
+                        <span class="badge bg-success">Paid</span>
+                    {% endif %}
+                </td>
+            {% endfor %}
+            
+        </ul>
+    {% else %}
+        <p>No appointments found.</p>
+    {% endif %}
+</div>
+{% endblock %} {% endcomment %}
+
+
+
+{% block title %}Our Doctors - PH HealthCare{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">Your Appointments</h2>
+
+    {% if appointments %}
+        <div class="row">
+            {% for appointment in appointments %}
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100 shadow">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="card-title mb-0">Dr. {{ appointment.doctor.user.username }}</h5>
+                        <span class="badge bg-{% if appointment.status == 'Confirmed' %}success{% else %}warning{% endif %}">
+                            {{ appointment.status }}
+                        </span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <small class="text-muted">Patient</small>
+                                <p class="mb-0">{{ appointment.patient.user.username }}</p>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted">Date & Time</small>
+                                <p class="mb-0">{{ appointment.slot.start_time|date:"M d, Y" }}<br>
+                                {{ appointment.slot.start_time|time }} - {{ appointment.slot.end_time|time }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <small class="text-muted">Consultation Fee</small>
+                                <h4 class="mb-0">৳{{ appointment.consultation_fee }}</h4>
+                            </div>
+                            <div class="text-end">
+                                <small class="text-muted">Payment Status</small>
+                                <span class="badge bg-{% if appointment.payment_status %}success{% else %}danger{% endif %}">
+                                    {{ appointment.payment_status|yesno:"Paid,Unpaid" }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <a href="{% url 'update_appointment' appointment.id %}" 
+                                   class="btn btn-outline-secondary w-100">
+                                    Reschedule
+                                </a>
+                            </div>
+                            <div class="col-6">
+                                {% if not appointment.payment_status %}
+                                <form action="{% url 'initiate_payment' appointment.id %}" method="POST">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-primary w-100">
+                                        Pay Now
+                                    </button>
+                                </form>
+                                {% else %}
+                                    <button class="btn btn-success w-100" disabled>
+                                        Payment Completed
+                                    </button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            No appointments found. Book your first appointment with one of our expert doctors!
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

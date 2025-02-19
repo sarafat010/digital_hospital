@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% comment %} {% block title %}Doctor Details - PH HealthCare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Doctor details</h2>
+
+<div class="row g-4">
+    {% if doctor %}
+        <div class="col-md-4">
+
+            <div class="card h-100">
+                <div class="card-body">
+                    {% if doctor.profile_picture %}
+                        <img src="{{ doctor.profile_picture.url }}" class="img-thumbnail rounded-squire" alt="Profile Image" width="150" height="150">
+                        {% else %}
+                        <img src="https://via.placeholder.com/150" class="img-thumbnail rounded-squire" alt="Default Profile Image">
+                    {% endif %}
+                
+                    <h5 class="card-title">Dr. {{ doctor.user.get_full_name }}</h5> 
+                    <h6 class="card-subtitle mb-2 text-muted"><strong>Specialized:</strong> {% for name in doctor.specialization.all %}
+                        {{ name }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </h6>
+                    <p class="card-text">
+                        
+                        <strong>Qualification:</strong> {{ doctor.qualifications }}<br>
+                        <strong>Consultation Fee:</strong> ${{ doctor.consultation_fee }} <br>
+                        <strong>Rating:</strong> {{ rating }}
+                    </p>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'doctor_profile' doctor.user.id %}" class="btn btn-primary">View Profile</a>
+                        {% if user.is_authenticated and user.user_type == 'patient' %}
+                            <a href="{% url 'create_appointment' doctor.id %}" class="btn btn-outline-primary">Book Appointment</a>
+                            <a href="{% url 'create_review' doctor.id %}" class="btn btn-outline-primary btn-lg px-4">Review doctor</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            
+            <a href="{% url 'show_review' doctor.id %}" class="btn btn-outline-success btn-lg px-4">Show reviews</a>
+        </div>
+    {% else %}
+        <div class="col">
+            <p class="text-center">No doctors available at the moment.</p>
+        </div>
+    {% endif %}
+</div>
+<br><br><br><br><br><br><br><br>
+{% endblock %}
+ {% endcomment %}
+
+
+
+{% block title %}Doctor Details - PH HealthCare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row g-4">
+        {% if doctor %}
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <!-- Doctor Header -->
+                    <div class="d-flex align-items-start gap-4 mb-4">
+                        <!-- Profile Image -->
+                        <div class="position-relative">
+                            {% if doctor.profile_picture %}
+                            <img src="{{ doctor.profile_picture.url }}" 
+                                 class="rounded-circle object-fit-cover border border-3 border-primary"
+                                 alt="Dr. {{ doctor.user.get_full_name }}"
+                                 width="150" 
+                                 height="150">
+                            {% else %}
+                            <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" 
+                                 style="width: 150px; height: 150px;">
+                                <i class="bi bi-person-heart fs-1 text-secondary"></i>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Doctor Info -->
+                        <div class="flex-grow-1">
+                            <h1 class="h2 mb-3 fw-bold text-primary">Dr. {{ doctor.user.get_full_name }}</h1>
+                            
+                            <!-- Specializations -->
+                            <div class="d-flex flex-wrap gap-2 mb-3">
+                                {% for spec in doctor.specialization.all %}
+                                <span class="badge rounded-pill bg-primary-subtle text-primary fs-6 py-2 px-3">
+                                    {{ spec }}
+                                </span>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Quick Stats -->
+                            <div class="d-flex gap-4 mb-3">
+                                <div class="text-center">
+                                    <div class="fs-5 fw-bold text-primary">${{ doctor.consultation_fee }}</div>
+                                    <small class="text-muted">Consultation Fee</small>
+                                </div>
+                                <div class="text-center">
+                                    <div class="fs-5 fw-bold text-primary">
+                                        <i class="bi bi-star-fill text-warning"></i>
+                                        {{ rating|default:"4.5" }}/5
+                                    </div>
+                                    <small class="text-muted">Average Rating</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Details Section -->
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="bg-light rounded-3 p-4 h-100">
+                                <h3 class="h5 mb-3 fw-bold">Qualifications</h3>
+                                <p class="mb-0">{{ doctor.qualifications }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <div class="bg-light rounded-3 p-4 h-100">
+                                <h3 class="h5 mb-3 fw-bold">Availability</h3>
+                                {% for slot in slots %}
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <i class="bi bi-calendar-check text-primary"></i>
+                                        <span>{{ slot.day.name }}: {{ slot.start_time}} - {{ slot.end_time }}</span>
+                                    </div>
+                                {% endfor %}
+                                <div class="d-flex align-items-center gap-2">
+                                    <i class="bi bi-clock-history text-primary"></i>
+                                    <span>Emergency 24/7 Available</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Sidebar -->
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
+                <div class="card-body p-4">
+                    <div class="d-grid gap-3">
+                        <a href="{% url 'doctor_profile' doctor.user.id %}" 
+                           class="btn btn-primary btn-lg d-flex justify-content-between align-items-center">
+                           Full Profile
+                           <i class="bi bi-person-lines-fill"></i>
+                        </a>
+                        
+                        {% if user.is_authenticated and user.user_type == 'patient' %}
+                        <a href="{% url 'create_appointment' doctor.id %}" 
+                           class="btn btn-success btn-lg d-flex justify-content-between align-items-center">
+                           Book Now
+                           <i class="bi bi-calendar-plus"></i>
+                        </a>
+                        
+                        <a href="{% url 'create_review' doctor.id %}" 
+                           class="btn btn-outline-primary btn-lg d-flex justify-content-between align-items-center">
+                           Write Review
+                           <i class="bi bi-pencil-square"></i>
+                        </a>
+                        {% endif %}
+                        
+                        <a href="{% url 'show_review' doctor.id %}" 
+                           class="btn btn-outline-secondary btn-lg d-flex justify-content-between align-items-center">
+                           View Reviews
+                           <i class="bi bi-chat-left-text"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="col-12">
+            <div class="text-center py-5 my-5">
+                <div class="empty-state">
+                    <i class="bi bi-person-x fs-1 text-muted mb-3"></i>
+                    <h3 class="h4 fw-normal">Doctor Not Found</h3>
+                    <p class="text-muted">The requested doctor profile is not available.</p>
+                    <a href="{% url 'doctor_list' %}" class="btn btn-primary mt-3">
+                        Browse Doctors
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

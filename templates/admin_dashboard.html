@@ -1,0 +1,36 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard - PH HealthCare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0"><a href="{% url 'admin:index' %}" class="btn btn-primary">Admin Panel</a></h5>
+            </div>
+            <div class="card-body">
+                <a href="{% url 'create_appointment_slot' %}" class="btn btn-primary">Create Schedule</a>
+            </div>
+        </div>
+
+        
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Admin Profile</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Full Name:</strong> {{ full_name }}</p>
+                
+                {% comment %} <a href="{% url 'profile' %}" class="btn btn-primary">Update Profile</a> {% endcomment %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

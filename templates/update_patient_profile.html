@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block title %}Update patient Profile - PH HealthCare{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Update patient Profile</h2>
+
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Update patient Profile</h5>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" action="{% url "update_patient_profile" user_id %}">
+                    {% csrf_token %}
+                    {{ user_form.as_p }}
+                    {{ patient_form.as_p }}
+                    {{ profile_form.as_p }}
+                    <button type="submit">Update</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+{% endblock %}

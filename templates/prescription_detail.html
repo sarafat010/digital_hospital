@@ -1,0 +1,125 @@
+
+{% extends 'base.html' %}
+
+{% comment %} {% block title %}Prescription List{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Prescription</h2>
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-8">
+                <h5 class="card-title">
+                    
+                {% if prescription %}
+                    <ul>
+                        
+                            <li>
+                                <strong>Patient:</strong> {{ prescription.appointment.patient.user.get_full_name }}<br>
+                                <strong>Prescription text:</strong>{{ prescription.prescription_text }}<br>
+                                <strong>Additional notes:</strong> {{ prescription.additional_notes }}<br>
+                                <strong>Created at:</strong> {{ prescription.created_at }}<br>
+                                
+                            </li>
+                            {% if user.user_type == "doctor" and user.id == prescription.appointment.slot.doctor.user.id %}
+                            <a href="{% url "update_prescription" prescription.id %}" class="btn btn-success">Edit Prescription</a>
+                            {% endif %}
+                    </ul>
+                {% else %}
+                    {% if user.user_type == "doctor" and user.id == appointment.slot.doctor.user.id %}
+                        <a href="{% url "create_prescription" appointment_id %}" class="btn btn-success">create Prescription</a>
+                    {% else %}
+                        <p class="text-center">No prescription found.</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+    
+</div>
+{% endblock %} {% endcomment %}
+
+
+{% block title %}Prescription List{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Prescription Details</h2>
+        {% if prescription and user.user_type == "doctor" and user.id == prescription.appointment.slot.doctor.user.id %}
+        <a href="{% url 'update_prescription' prescription.id %}" class="btn btn-outline-primary">
+            <i class="bi bi-pencil-square"></i> Edit Prescription
+        </a>
+        {% endif %}
+    </div>
+
+    <div class="card shadow-lg">
+        {% if prescription %}
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">
+                <i class="bi bi-file-medical"></i>
+                Prescription #{{ prescription.id }}
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-4">Patient</dt>
+                        <dd class="col-sm-8">{{ prescription.appointment.patient.user.get_full_name }}</dd>
+
+                        <dt class="col-sm-4">Appointment Date</dt>
+                        <dd class="col-sm-8">{{ prescription.appointment.slot.date|date:"M d, Y" }}</dd>
+
+                        <dt class="col-sm-4">Created At</dt>
+                        <dd class="col-sm-8">{{ prescription.created_at|date:"M d, Y H:i" }}</dd>
+                    </dl>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-2">Prescription Text</h6>
+                        <div class="bg-light p-3 rounded">
+                            {{ prescription.prescription_text|linebreaks }}
+                        </div>
+                    </div>
+                    
+                    {% if prescription.additional_notes %}
+                    <div class="mb-3">
+                        <h6 class="text-muted mb-2">Additional Notes</h6>
+                        <div class="bg-light p-3 rounded">
+                            {{ prescription.additional_notes|linebreaks }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="card-body">
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="bi bi-file-medical fs-1 text-muted"></i>
+                </div>
+                <h5 class="text-muted mb-4">No prescription found</h5>
+                {% if user.user_type == "doctor" and user.id == appointment.slot.doctor.user.id %}
+                <a href="{% url 'create_prescription' appointment_id %}" class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-circle"></i> Create New Prescription
+                </a>
+                {% else %}
+                <div class="alert alert-info" role="alert">
+                    No prescription has been created for this appointment yet.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+
+
+

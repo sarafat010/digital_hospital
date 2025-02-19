@@ -1,0 +1,20 @@
+asgiref==3.8.1
+attrs==25.1.0
+certifi==2025.1.31
+charset-normalizer==3.4.1
+Django==5.1.5
+idna==3.10
+isodate==0.7.2
+lxml==5.3.0
+pillow==11.1.0
+platformdirs==4.3.6
+python-dotenv==1.0.1
+pytz==2025.1
+requests==2.32.3
+requests-file==2.1.0
+requests-toolbelt==1.0.0
+sqlparse==0.5.3
+sslcommerz-lib @ git+https://github.com/sslcommerz/SSLCommerz-Python.git@897c28e303e637e588829e5769e32b2ad77328f7
+typed_ast==1.5.4
+urllib3==2.3.0
+zeep==4.3.1
