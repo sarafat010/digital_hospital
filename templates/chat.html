@@ -1,0 +1,52 @@
+<!-- chat/templates/chat/room.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div id="chat-container">
+    <div id="chat-log"></div>
+    <input id="chat-input" type="text" placeholder="Type your message...">
+    <button id="chat-submit">Send</button>
+</div>
+
+<style>
+#chat-container {
+    width: 600px;
+    margin: 0 auto;
+}
+#chat-log {
+    height: 400px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    overflow-y: scroll;
+}
+</style>
+
+<script>
+const chatSocket = new WebSocket(
+    'ws://' + window.location.host + '/ws/chat/'
+);
+
+chatSocket.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    const chatLog = document.querySelector('#chat-log');
+    chatLog.innerHTML += `<div><strong>${data.user}:</strong> ${data.message}</div>`;
+    chatLog.scrollTop = chatLog.scrollHeight;
+};
+
+document.querySelector('#chat-submit').onclick = function(e) {
+    const messageInput = document.querySelector('#chat-input');
+    const message = messageInput.value;
+    chatSocket.send(JSON.stringify({
+        'message': message
+    }));
+    messageInput.value = '';
+};
+
+document.querySelector('#chat-input').onkeyup = function(e) {
+    if (e.keyCode === 13) {  // Enter key
+        document.querySelector('#chat-submit').click();
+    }
+};
+</script>
+{% endblock %}

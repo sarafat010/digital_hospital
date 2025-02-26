@@ -1,0 +1,133 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Call - {{ room_name }}</title>
+    <style>
+        /* Same CSS as previous answer */
+    </style>
+</head>
+<body>
+    <div class="video-call-container">
+        <div class="local-video">
+            <video id="localVideo" autoplay muted></video>
+            <div class="user-info">{{ request.user.get_full_name }}</div>
+        </div>
+        <div class="remote-videos" id="remoteVideos"></div>
+        <div class="call-controls">
+            <button id="toggleAudio"><i class="fas fa-microphone"></i></button>
+            <button id="toggleVideo"><i class="fas fa-video"></i></button>
+            <button id="endCall" class="end-call"><i class="fas fa-phone"></i></button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simple-peer/9.11.0/simplepeer.min.js"></script>
+    <script>
+        const roomName = '{{ room_name }}';
+        const token = '{{ token }}';
+        const config = {
+            iceServers: [
+                { urls: '{{ webrtc_config.STUN_SERVER }}' },
+                {
+                    urls: '{{ webrtc_config.TURN_SERVER }}',
+                    username: '{{ webrtc_config.TURN_USERNAME }}',
+                    credential: '{{ webrtc_config.TURN_PASSWORD }}'
+                }
+            ]
+        };
+
+        let localStream;
+        let peers = {};
+        const socket = new WebSocket(
+            `ws://${window.location.host}/ws/videocall/${roomName}/?token=${token}`
+        );
+
+        // Initialize local media
+        async function init() {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                document.getElementById('localVideo').srcObject = localStream;
+            } catch (err) {
+                console.error('Error accessing media devices:', err);
+            }
+        }
+
+        // WebSocket handlers
+        socket.onmessage = function(e) {
+            const data = JSON.parse(e.data);
+            
+            if (data.type === 'offer' || data.type === 'answer' || data.type === 'candidate') {
+                if (!peers[data.from]) return;
+                peers[data.from].signal(data);
+            }
+            
+            if (data.type === 'new-peer') {
+                initPeer(data.userId, false);
+            }
+        };
+
+        // Peer management
+        function initPeer(userId, initiator) {
+            const peer = new SimplePeer({
+                initiator,
+                stream: localStream,
+                config
+            });
+
+            peer.on('signal', data => {
+                socket.send(JSON.stringify({
+                    ...data,
+                    to: userId
+                }));
+            });
+
+            peer.on('stream', stream => {
+                addVideoStream(userId, stream);
+            });
+
+            peer.on('close', () => {
+                removeVideoStream(userId);
+                delete peers[userId];
+            });
+
+            peers[userId] = peer;
+        }
+
+        function addVideoStream(userId, stream) {
+            const remoteVideos = document.getElementById('remoteVideos');
+            const videoContainer = document.createElement('div');
+            videoContainer.className = 'remote-video';
+            videoContainer.id = `remote-${userId}`;
+            
+            videoContainer.innerHTML = `
+                <video autoplay></video>
+                <div class="user-info">Participant</div>
+            `;
+            
+            videoContainer.querySelector('video').srcObject = stream;
+            remoteVideos.appendChild(videoContainer);
+        }
+
+        function removeVideoStream(userId) {
+            const videoContainer = document.getElementById(`remote-${userId}`);
+            if (videoContainer) videoContainer.remove();
+        }
+
+        // Control handlers
+        document.getElementById('toggleAudio').addEventListener('click', () => {
+            localStream.getAudioTracks().forEach(track => track.enabled = !track.enabled);
+        });
+
+        document.getElementById('toggleVideo').addEventListener('click', () => {
+            localStream.getVideoTracks().forEach(track => track.enabled = !track.enabled);
+        });
+
+        document.getElementById('endCall').addEventListener('click', () => {
+            window.location.href = "{% url 'home' %}";
+        });
+
+        // Initialize call
+        init();
+    </script>
+</body>
+</html>
