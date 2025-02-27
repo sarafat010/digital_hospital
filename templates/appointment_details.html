@@ -19,7 +19,9 @@
                                 <div class="d-flex justify-content-between align-items-start">
                                     <h5 class="card-title mb-0 text-primary">
                                         {% if user.user_type == 'doctor' %}
+                                        <a href="{% url 'patient_profile' appointment.patient.user.id %}" class="text-decoration-none">
                                         <i class="bi bi-person-heart me-2"></i>{{ appointment.patient.user.get_full_name }}
+                                        </a>
                                         {% else %}
                                         <i class="bi bi-heart-pulse me-2"></i>Dr. {{ appointment.slot.doctor.user.get_full_name }}
                                         {% endif %}

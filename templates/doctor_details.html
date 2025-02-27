@@ -1,58 +1,5 @@
 {% extends 'base.html' %}
 
-{% comment %} {% block title %}Doctor Details - PH HealthCare{% endblock %}
-
-{% block content %}
-<h2 class="mb-4">Doctor details</h2>
-
-<div class="row g-4">
-    {% if doctor %}
-        <div class="col-md-4">
-
-            <div class="card h-100">
-                <div class="card-body">
-                    {% if doctor.profile_picture %}
-                        <img src="{{ doctor.profile_picture.url }}" class="img-thumbnail rounded-squire" alt="Profile Image" width="150" height="150">
-                        {% else %}
-                        <img src="https://via.placeholder.com/150" class="img-thumbnail rounded-squire" alt="Default Profile Image">
-                    {% endif %}
-                
-                    <h5 class="card-title">Dr. {{ doctor.user.get_full_name }}</h5> 
-                    <h6 class="card-subtitle mb-2 text-muted"><strong>Specialized:</strong> {% for name in doctor.specialization.all %}
-                        {{ name }}{% if not forloop.last %}, {% endif %}
-                        {% endfor %}
-                    </h6>
-                    <p class="card-text">
-                        
-                        <strong>Qualification:</strong> {{ doctor.qualifications }}<br>
-                        <strong>Consultation Fee:</strong> ${{ doctor.consultation_fee }} <br>
-                        <strong>Rating:</strong> {{ rating }}
-                    </p>
-                    <div class="d-grid gap-2">
-                        <a href="{% url 'doctor_profile' doctor.user.id %}" class="btn btn-primary">View Profile</a>
-                        {% if user.is_authenticated and user.user_type == 'patient' %}
-                            <a href="{% url 'create_appointment' doctor.id %}" class="btn btn-outline-primary">Book Appointment</a>
-                            <a href="{% url 'create_review' doctor.id %}" class="btn btn-outline-primary btn-lg px-4">Review doctor</a>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-
-            
-            <a href="{% url 'show_review' doctor.id %}" class="btn btn-outline-success btn-lg px-4">Show reviews</a>
-        </div>
-    {% else %}
-        <div class="col">
-            <p class="text-center">No doctors available at the moment.</p>
-        </div>
-    {% endif %}
-</div>
-<br><br><br><br><br><br><br><br>
-{% endblock %}
- {% endcomment %}
-
-
-
 {% block title %}Doctor Details - PH HealthCare{% endblock %}
 
 {% block content %}

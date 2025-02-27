@@ -1,42 +1,5 @@
 {% extends 'base.html' %}
 
-{% comment %} {% extends 'base.html' %}
-
-{% block title %}Our Doctors - PH HealthCare{% endblock %}
-
-{% block content %}
-
-<div class="container mt-3">
-    <div class="d-flex flex-row gap-2">
-        {% for specialization in specializations %}
-            <div class="p-2 bg-light border">
-                <a href="{% url 'doctor_category' specialization.name %}" class="btn btn-primary">{{ specialization.name }}</a>
-            </div>
-        {% endfor %}
-    </div>
-</div>
-
-<h2 class="mb-4">Our Doctors</h2>
-
-<div class="row g-4">
-    {% for doctor in doctors %}
-        <div class="col-md-4">
-            {% include 'doctor_card.html' with doctor=doctor %}
-        </div>
-    {% empty %}
-        <div class="col">
-            <p class="text-center">No doctors available at the moment.</p>
-        </div>
-    {% endfor %}
-</div>
-<br><br><br><br><br><br><br><br>
-{% endblock %}
-
- {% endcomment %}
-
-
-
-
 {% block title %}Our Doctors - PH HealthCare{% endblock %}
 
 {% block content %}

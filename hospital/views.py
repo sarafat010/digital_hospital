@@ -13,7 +13,6 @@ from django.urls import reverse
 from django.http import HttpResponseBadRequest
 import requests
 from django.views.decorators.csrf import csrf_exempt
-from .payment import SSLCommerz
 from django.http import HttpResponse
 from sslcommerz_lib import SSLCOMMERZ
 from decimal import Decimal
@@ -22,13 +21,7 @@ import hashlib
 import random
 from django.contrib.auth.hashers import make_password
 from datetime import datetime, timedelta, time
-
-
-
-
 from .decorators import admin_required, doctor_required, patient_required
-
-
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 # Check for user type
@@ -153,7 +146,7 @@ def home(request):
     return render(request, "home.html")
 
 
-
+@login_required
 def create_appointment_slot(request):
     if request.method == 'POST':
         form = AppointmentSlotForm(request.POST)
@@ -195,7 +188,7 @@ def get_next_date(day_name):
 
     return next_date
 
-
+@login_required
 def update_appointment_slot(request, pk):
     appointment_slot = AppointmentSlot.objects.get(pk=pk)
     if request.method == 'POST':
@@ -207,7 +200,7 @@ def update_appointment_slot(request, pk):
         form = AppointmentSlotForm(instance=appointment_slot)
     return render(request, 'appointment_slot_form.html', {'form': form})
 
-
+@login_required
 def delete_appointment_slot(request, pk):
     if not request.user.is_authenticated or not (request.user.is_superuser or request.user.user_type == 'doctor'):
         messages.error(request, "You do not have permission to delete this appointment slot.")
@@ -224,13 +217,13 @@ def delete_appointment_slot(request, pk):
 
     return redirect('appointment_slot_list')
 
-
+@login_required
 def appointment_slot_list(request):
     slot = AppointmentSlot.objects.all()
 
     return render(request, "appointment_slot_list.html", {"slot_list":slot})
 
-
+@login_required
 def doctor_list(request):
     doctors = Doctor.objects.all()
     specializations = Specialization.objects.all()
@@ -238,7 +231,7 @@ def doctor_list(request):
 
     return render(request, "doctor_list.html", {"doctors":doctors, "specializations":specializations})
 
-
+@login_required
 def search_doctor(request):
     if request.method == "POST":
         searched = request.POST.get("searched")
@@ -252,7 +245,7 @@ def search_doctor(request):
         return render(request, "search_doctor.html", {})
 
 
-@login_required
+""" @login_required
 @patient_required
 def create_appointment(request, doctor_id):
     user = request.user
@@ -265,7 +258,10 @@ def create_appointment(request, doctor_id):
 
 
     if request.method == 'POST':
-        form = AppointmentForm(request.POST)
+        #form = AppointmentForm(request.POST)
+        form = AppointmentForm()
+        slot_id = request.POST.get("slot_id")
+        slot = get_object_or_404(AppointmentSlot, id=slot_id)
         if form.is_valid():
             patient = Patient.objects.get(user=user)
             appointment = form.save(commit=False)
@@ -299,7 +295,60 @@ def create_appointment(request, doctor_id):
             #return redirect('initiate_payment', appointment_id=appointment.id)
     else:
         form = AppointmentForm() #initial={'patient': user.patient_profile}
+    return render(request, 'appointment_form.html', {'form': form, 'slots':slots}) """
+
+
+@login_required
+@patient_required
+def create_appointment(request, doctor_id):
+    user = request.user
+    slots = AppointmentSlot.objects.filter(doctor__id=doctor_id)
+
+    for slot in slots:
+        date = get_next_date(slot.day.name)
+        slot.date = date
+        slot.save()
+
+
+    if request.method == 'POST':
+        slot_id = request.POST.get("slot_id")
+        slot = get_object_or_404(AppointmentSlot, id=slot_id)
+        
+        patient = Patient.objects.get(user=user)
+        start_time = (datetime.combine(slot.date, slot.start_time) + timedelta(minutes=slot.decider1.hour * 60 + slot.decider1.minute)).time()
+        end_time = (datetime.combine(slot.date, slot.start_time) + timedelta(minutes=slot.decider2.hour * 60 + slot.decider2.minute)).time()
+        
+        
+        decider1_datetime = datetime.combine(slot.date, slot.decider1) + timedelta(minutes=10)
+        decider2_datetime = datetime.combine(slot.date, slot.decider2) + timedelta(minutes=10)
+
+        if end_time > slot.end_time:
+            slot.decider1 = time(0, 0) 
+            slot.decider2 = time(0, 10)  
+            slot.date += timedelta(days=7)
+            start_time = (datetime.combine(slot.date, slot.start_time) + timedelta(minutes=slot.decider1.hour * 60 + slot.decider1.minute)).time()
+            end_time = (datetime.combine(slot.date, slot.start_time) + timedelta(minutes=slot.decider2.hour * 60 + slot.decider2.minute)).time()
+        
+        else:
+            slot.decider1 = decider1_datetime.time()
+            slot.decider2 = decider2_datetime.time()
+
+        appointment = Appointment.objects.create(
+            patient = patient,
+            slot = slot,
+            consultation_fee = slot.doctor.consultation_fee,
+            start_time = start_time,
+            end_time = end_time
+        )
+
+        appointment.save()
+        slot.save()
+        return redirect('appointment_list', pk=user.id)  
+        
+    else:
+        form = AppointmentForm() 
     return render(request, 'appointment_form.html', {'form': form, 'slots':slots})
+
 
 @login_required
 @doctor_required
@@ -309,7 +358,10 @@ def update_appointment(request, pk):
     if request.method == 'POST':
         status = request.POST.get("status")
         appointment.status = status
-        print(f"appointment status : {appointment.status}")
+        if status == "completed":
+            patient = get_object_or_404(Patient, id=appointment.patient.id)
+            patient.last_checkup = datetime.today()
+            patient.save()
         appointment.save()
         if user.user_type == 'doctor':
             return redirect('doctor_dashboard')
@@ -323,7 +375,7 @@ def appointment_details(request, appoint_id):
     appointment = get_object_or_404(Appointment, id=appoint_id)
     return render(request, "appointment_details.html", {"appointment":appointment})
 
-
+@login_required
 def appointment_list(request, pk):
     # Fetch the user type and ensure the user is authorized
     user = request.user
@@ -333,10 +385,10 @@ def appointment_list(request, pk):
     # Check if the logged-in user is the patient or doctor associated with the appointments
     if user.user_type == 'patient':
         patient = get_object_or_404(Patient, user=user)
-        appointments = Appointment.objects.filter(patient=patient).order_by("slot__date")
+        appointments = Appointment.objects.filter(patient=patient).order_by("-slot__date")
     elif user.user_type == 'doctor':
         doctor = get_object_or_404(Doctor, user=user)
-        appointments = Appointment.objects.filter(slot__doctor=doctor).order_by("slot__date")
+        appointments = Appointment.objects.filter(slot__doctor=doctor).order_by("-slot__date")
     else:
         # If the user is not a patient or doctor, return an error
         return render(request, "error.html", {"message": "You do not have permission to view appointments."})
@@ -445,13 +497,12 @@ def edit_report(request, report_id):
     if request.method == 'POST':
         form = DiagnosticReportForm(request.POST, request.FILES, instance=report)
         if form.is_valid():
-            form.save()  # Save the updated report
-            return redirect('report_view', patient_id=report.patient.user.id)  # Redirect to the report detail view
+            form.save()  
+            return redirect('report_view', patient_id=report.patient.user.id)  
     else:
         # Populate the form with the existing report instance
         form = DiagnosticReportForm(instance=report)
     
-    # Render the edit form in a template
     return render(request, 'report_form.html', {'form': form, 'report': report})
 
 
@@ -464,7 +515,7 @@ def report_view(request, patient_id):
     
     return render(request, 'report_detail.html', {'reports': reports})
 
-
+@login_required
 def appointment_prescription_history(request, pk):
     patient = Patient.objects.get(id=pk)
     appointments = Appointment.objects.filter(
@@ -666,11 +717,12 @@ def appointment_confirmation_email(request, appointment):
         Your appointment has been confirmed with the following details:
 
         Doctor: {appointment.slot.doctor.user.get_full_name()}
-        Room: {appointment.slot.room}  
+        Room: {appointment.slot.room} 
+        Meeting ID: {appointment.slot.doctor.user.username} 
         Date: {appointment.slot.date.strftime('%B %d, %Y')}, {appointment.slot.day}
         Time: {appointment.start_time.strftime('%I:%M %p')} to {appointment.end_time.strftime('%I:%M %p')}
 
-        Please arrive 15 minutes before your scheduled time.
+        Please arrive 5 minutes before your scheduled time.
         Thank you for choosing our healthcare services.
 
         PH HealthCare
@@ -802,15 +854,17 @@ def update_doctor_profile(request, doctor_id):
             form.save()
             return redirect("doctor_dashboard")
     else:
-        form = DoctorProfileForm()
+        form = DoctorProfileForm(instance=doctor)
     return render(request, "update_doctor_profile.html", {"form":form, "doctor":doctor})
 
 
 @login_required
 def doctor_profile(request, user_id):
     doctor = get_object_or_404(Doctor, user__id=user_id)
+    total_patient_treated = Appointment.objects.filter(slot__doctor=doctor).aggregate(total_patients=Count('patient', distinct=True))['total_patients']
 
-    return render(request, "doctor_profile.html", {"doctor":doctor})
+
+    return render(request, "doctor_profile.html", {"doctor":doctor, "total_patient_treated":total_patient_treated})
 
 @login_required
 def doctor_details(request, doctor_id):
@@ -823,15 +877,19 @@ def doctor_details(request, doctor_id):
 
 
 
-
+@login_required
 def video_chat(request, room_id):
     return render(request, 'video_chat.html', {'room_id': room_id})
 
-
+@login_required
 def doctor_category(request, cat_name):
     cat_name = cat_name.replace("-", " ")
     specialization = Specialization.objects.get(name=cat_name)
     doctors = Doctor.objects.filter(specialization = specialization)
     
     return render(request, "doctor_category.html", {"doctors":doctors, "cat_name":cat_name})
+
+@login_required
+def about(request):
+    return render(request, "about.html", {})
         

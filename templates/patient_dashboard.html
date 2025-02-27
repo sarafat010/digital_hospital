@@ -1,128 +1,6 @@
 
 {% extends 'base.html' %}
 
-{% comment %} {% block title %}Patient Dashboard - PH HealthCare{% endblock %}
-
-{% block content %}
-<h2 class="mb-4">Patient Dashboard</h2>
-
-<div class="row">
-    <div class="col-md-8">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title mb-0">My Upcoming Appointments</h5>
-            </div>
-            <div class="card-body">
-                {% for appointment in appointments %}
-                    {% if appointment.status == "booked" or appointment.status == "confirmed" %}
-                    {% include 'appointment_card.html' with appointment=appointment %}
-                    <td>
-                        {% if not appointment.payment_status %}
-                            <a href="{% url 'initiate_payment' appointment.id %}" 
-                               class="btn btn-sm btn-success">Pay Now</a>
-                        {% else %}
-                            <span class="badge bg-success">Paid</span>
-                        {% endif %}
-                    </td>
-                    {% endif %}
-                {% empty %}
-                    <p class="text-center">No appointments found.</p>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Recent Prescriptions</h5>
-            </div>
-            <div class="card-body">
-                {% for i in prescriptions %}
-                    {% for prescription in i %}
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                <h6 class="card-subtitle mb-2 text-muted">
-                                    Dr. {{ prescription.appointment.slot.doctor.user.get_full_name }}
-                                </h6>
-                                <p class="card-text">
-                                    <ul>
-                            
-                                        <li>
-                                            <strong>Patient:</strong> {{ prescription.appointment.patient.user.get_full_name }}<br>
-                                            <strong>Created at:</strong> {{ prescription.created_at }}<br>
-                                            
-                                        </li>
-                                </ul>
-                                </p>
-                                {% if prescription.appointment.id %}
-                                    <a href="{% url 'prescription_detail' prescription.appointment.id %}" class="btn btn-sm btn-primary">
-                                        View Details
-                                    </a>
-                                {% else %}
-                                    <span class="text-danger">No appointment ID found.</span>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endfor %}
-                {% empty %}
-                    <p class="text-center">No prescriptions found.</p>
-                {% endfor %}
-            </div>
-        </div>
-
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title mb-0"><a href="{% url 'appointment_prescription_history' patient_id %}" class="btn btn-primary">Appointment history</a></h5>
-            </div>
-        </div>
-
-
-
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Diagnostic Report</h5>
-            </div>
-            <div class="card-body">
-                        <div class="card mb-3">
-                            <div class="card-body">
-                                
-                                <p class="card-text">
-                                    <ul>
-                            
-                                        <li>
-                                            <a href="{% url 'report_view' user.id %}" class="btn btn-primary">View Report</a>
-                                            
-                                        </li>
-                                        <li>
-                                            <a href="{% url 'upload_report' %}" class="btn btn-primary">Upload report</a>
-                                            
-                                        </li>
-                                </ul>
-                                </p>
-                                
-                            </div>
-                        </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Medical Profile</h5>
-            </div>
-            <div class="card-body">
-                <p><strong>Blood Group:</strong> {{ user.patient.blood_group }}</p>
-                <p><strong>Date of Birth:</strong> {{ user.patient.date_of_birth }}</p>
-                <a href="{% url 'profile' %}" class="btn btn-primary">Update Profile</a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %} {% endcomment %}
-
-
-
-
 {% block title %}Patient Dashboard - PH HealthCare{% endblock %}
 
 {% block content %}
@@ -269,6 +147,10 @@
                        class="list-group-item list-group-item-action d-flex align-items-center">
                        <i class="fas fa-calendar-check me-3"></i>Book New Appointment
                     </a>
+                    <a href="{% url 'dashboard' %}" 
+                       class="list-group-item list-group-item-action d-flex align-items-center">
+                       <i class="fas fa-calendar-check me-3"></i>Meeting room
+                    </a>
                 </div>
             </div>
 
@@ -286,7 +168,12 @@
                         <dd class="col-sm-7">{{ user.patient.date_of_birth }}</dd>
 
                         <dt class="col-sm-5">Last Checkup</dt>
-                        <dd class="col-sm-7">-</dd>
+                        {% if user.patient.last_checkup %}
+                            <dd class="col-sm-7">{{ user.patient.last_checkup }}</dd>
+                        {% else %}
+                            <dd class="col-sm-7">-</dd>
+                        {% endif %}
+                        
                     </dl>
                 </div>
             </div>

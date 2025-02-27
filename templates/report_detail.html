@@ -1,35 +1,5 @@
 {% extends 'base.html' %}
 
-{% comment %} {% block title %}Our Doctors - PH HealthCare{% endblock %}
-
-{% block content %}
-<h2 class="mb-4">Your appointments</h2>
-
-<div class="row g-4">
-    {% if reports %}
-        <ul>
-            <li><h1>Diagnostic Report Details</h1></li>
-            {% for report in reports %}
-                <li>
-                    
-                    <p><strong>Patient:</strong> {{ report.patient.user.get_full_name }}</p>
-                    <p><strong>Uploaded At:</strong> {{ report.uploaded_at }}</p>
-                    <p><strong>Description:</strong> {{ report.description }}</p>
-                    <p><strong>Report File:</strong> <a href="{{ report.report_file.url }}" target="_blank">Download</a></p>
-                    <a href="{% url 'edit_report' report.id %}">Edit Report</a>
-                </li>
-                
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No reports found.</p>
-    {% endif %}
-</div>
-{% endblock %} {% endcomment %}
-
-
-
-
 {% block title %}Our Doctors - PH HealthCare{% endblock %}
 
 {% block content %}

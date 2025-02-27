@@ -1,48 +1,6 @@
 
 {% extends 'base.html' %}
 
-{% comment %} {% block title %}Prescription List{% endblock %}
-
-{% block content %}
-<h2 class="mb-4">Prescription</h2>
-<div class="card mb-3">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-8">
-                <h5 class="card-title">
-                    
-                {% if prescription %}
-                    <ul>
-                        
-                            <li>
-                                <strong>Patient:</strong> {{ prescription.appointment.patient.user.get_full_name }}<br>
-                                <strong>Prescription text:</strong>{{ prescription.prescription_text }}<br>
-                                <strong>Additional notes:</strong> {{ prescription.additional_notes }}<br>
-                                <strong>Created at:</strong> {{ prescription.created_at }}<br>
-                                
-                            </li>
-                            {% if user.user_type == "doctor" and user.id == prescription.appointment.slot.doctor.user.id %}
-                            <a href="{% url "update_prescription" prescription.id %}" class="btn btn-success">Edit Prescription</a>
-                            {% endif %}
-                    </ul>
-                {% else %}
-                    {% if user.user_type == "doctor" and user.id == appointment.slot.doctor.user.id %}
-                        <a href="{% url "create_prescription" appointment_id %}" class="btn btn-success">create Prescription</a>
-                    {% else %}
-                        <p class="text-center">No prescription found.</p>
-                    {% endif %}
-                {% endif %}
-            </div>
-            
-        </div>
-    </div>
-</div>
-
-    
-</div>
-{% endblock %} {% endcomment %}
-
-
 {% block title %}Prescription List{% endblock %}
 
 {% block content %}

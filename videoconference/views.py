@@ -12,7 +12,7 @@ def dashboard(request):
 def videocall(request):
     roomID = request.user.username
     print(roomID)
-    return render(request, 'videoconference/videocall.html', {'name': request.user.first_name + " " + request.user.last_name, "roomID":1234})
+    return render(request, 'videoconference/videocall.html', {'name': request.user.first_name + " " + request.user.last_name, "roomID":roomID})
 
 
 
@@ -20,5 +20,5 @@ def videocall(request):
 def join_room(request):
     if request.method == 'POST':
         roomID = request.POST['roomID']
-        return redirect("/meeting?roomID=" + roomID)
+        return redirect("/conference/meeting?roomID=" + roomID)
     return render(request, 'videoconference/joinroom.html')

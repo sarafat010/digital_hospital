@@ -1,46 +1,5 @@
 {% extends 'base.html' %}
 
-{% comment %} {% block title %}Our Doctors - PH HealthCare{% endblock %}
-
-{% block content %}
-<h2 class="mb-4">Your appointments</h2>
-
-<div class="row g-4">
-    {% if appointments %}
-        <ul>
-            {% for appointment in appointments %}
-                <li>
-                    <strong>Patient:</strong> {{ appointment.patient.user.username }}<br>
-                    <strong>Doctor:</strong> {{ appointment.doctor.user.username }}<br>
-                    <strong>Slot:</strong> {{ appointment.slot.start_time }} to {{ appointment.slot.end_time }}<br>
-                    <strong>Status:</strong> {{ appointment.status }}<br>
-                    <strong>Fee:</strong> {{ appointment.consultation_fee }}<br>
-                    <strong>Payment Status:</strong> {{ appointment.payment_status|yesno:"Paid,Unpaid" }}<br>
-                </li>
-                <a href="{% url "update_appointment" appointment.id %}" class="btn btn-success">Update Appointment</a>
-                <td>
-                    {% if not appointment.payment_status %}
-                    <form action="{% url 'initiate_payment' appointment.id %}" method="POST">
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-primary">
-                            Pay Now (৳{{ appointment.consultation_fee }})
-                        </button>
-                    </form>
-                    {% else %}
-                        <span class="badge bg-success">Paid</span>
-                    {% endif %}
-                </td>
-            {% endfor %}
-            
-        </ul>
-    {% else %}
-        <p>No appointments found.</p>
-    {% endif %}
-</div>
-{% endblock %} {% endcomment %}
-
-
-
 {% block title %}Our Doctors - PH HealthCare{% endblock %}
 
 {% block content %}
@@ -62,11 +21,11 @@
                         <div class="row mb-3">
                             <div class="col-6">
                                 <small class="text-muted">Patient</small>
-                                <p class="mb-0">{{ appointment.patient.user.username }}</p>
+                                <p class="mb-0">{{ appointment.patient.user.get_full_name }}</p>
                             </div>
                             <div class="col-6">
                                 <small class="text-muted">Date & Time</small>
-                                <p class="mb-0">{{ appointment.slot.start_time|date:"M d, Y" }}<br>
+                                <p class="mb-0">{{ appointment.slot.date|date:"M d, Y" }} - {{ appointment.slot.day.name }}<br>
                                 {{ appointment.slot.start_time|time }} - {{ appointment.slot.end_time|time }}</p>
                             </div>
                         </div>

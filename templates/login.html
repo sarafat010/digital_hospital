@@ -1,38 +1,5 @@
 {% extends 'base.html' %}
 
-{% comment %} {% block title %}Login form{% endblock %}
-
-{% block content %}
-<h2 class="mb-4">Login form</h2>
-
-<div class="row">
-    <div class="col-md-8">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Login info</h5>
-            </div>
-            <div class="card-body">
-                <form method="POST" action="{% url "login" %}">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    
-                    <button type="submit" class="btn btn-secondary">submit</button>
-                  
-                    <a href="{% url 'reset_password' %}" class="btn btn-primary">
-                        Forgot Password?
-                    </a>
-                    
-                </form>
-            </div>
-        </div>
-    </div>
-    
-    
-</div>
-{% endblock %} {% endcomment %}
-
-
-
 {% block title %}Login Form - PH HealthCare{% endblock %}
 
 {% block content %}

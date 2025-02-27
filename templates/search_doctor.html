@@ -1,42 +1,5 @@
 {% extends 'base.html' %}
 
-{% comment %} {% block title %}Our Doctors - PH HealthCare{% endblock %}
-
-{% block content %}
-<h2 class="mb-4">Search Doctors</h2>
-
-<div class="row g-4">
-    <div class="card h-10">
-        <div class="card-body"> 
-            <form action="{% url "search_doctor" %}" method="POST">
-                {% csrf_token %}
-                <input type="text" name="searched" placeholder="search here">
-                    
-                <button type="submit" class="btn btn-secondary">search</button>
-            </form>
-        </div>
-    </div>
-</div>
-
-
-
-<div class="row g-4">
-    {% for doctor in doctors %}
-        <div class="col-md-4">
-            {% include 'doctor_card.html' with doctor=doctor %}
-        </div>
-    {% empty %}
-        <div class="col">
-            <p class="text-center">Nothig mached with your search.</p>
-        </div>
-    {% endfor %}
-</div>
-<br><br><br><br><br><br><br><br>
-{% endblock %} {% endcomment %}
-
-
-
-
 {% block title %}Find Doctors - PH HealthCare{% endblock %}
 
 {% block content %}

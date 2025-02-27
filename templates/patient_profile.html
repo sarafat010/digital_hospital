@@ -1,63 +1,4 @@
 {% extends "base.html" %}
-{% comment %} {% block content %}
-
-<!-- Header-->
-
-<header class="bg-dark py-5">
-    <div class="container px-4 px-lg-5 my-5">
-        <div class="text-center text-white">
-            <h1 class="display-4 fw-bolder">Your Profile</h1>
-            <p class="lead fw-normal text-white-50 mb-0">View and update your profile information.</p>
-        </div>
-    </div>
-</header>
-
-<!-- Profile Section -->
-<div class="container my-5">
-    <div class="row">
-        <div class="col-md-4 text-center">
-            <!-- Display Profile Picture -->
-            {% if profile.profile_picture %}
-            <img src="{{ profile.profile_picture.url }}" class="img-thumbnail rounded-circle" alt="Profile Image" width="150" height="150">
-            {% else %}
-            <img src="https://via.placeholder.com/150" class="img-thumbnail rounded-circle" alt="Default Profile Image">
-            {% endif %}
-        </div>
-
-        <div class="col-md-8">
-            <!-- Display Profile Details -->
-            <h3>{{ profile.patient.user.username }}</h3>
-            <p><strong>First Name:</strong> {{ profile.patient.user.first_name }}</p>
-            <p><strong>Last Name:</strong> {{ profile.patient.user.last_name }}</p>
-            <p><strong>Email:</strong> {{ profile.patient.user.email }}</p>
-            <p><strong>Phone:</strong> {{ profile.patient.user.phone_number }}</p>
-            <p><strong>Date of birth:</strong> {{ profile.patient.date_of_birth }}</p>
-            <p><strong>Gender:</strong> {{ profile.patient.gender }}</p>
-            <p><strong>Blood Group:</strong> {{ profile.patient.blood_group }}</p>
-            <p><strong>Medical history:</strong> {{ profile.patient.medical_history }}</p>
-            <p><strong>Address 1:</strong> {{ profile.address_1 }}</p>
-            <p><strong>Address 2:</strong> {{ profile.address_2 }}</p>
-            <p><strong>City:</strong> {{ profile.city }}</p>
-            <p><strong>Country:</strong> {{ profile.country }}</p>
-        </div>
-    </div>
-
-    <!-- Update Profile Button -->
-    {% if user.is_authenticated and user.id == profile.patient.user.id %}
-    <div class="row my-4">
-        <div class="col text-center">
-            <a href="{% url 'update_patient_profile' user.id %}" class="btn btn-primary">Edit Profile</a>
-            <a href="{% url 'update_password' %}" class="btn btn-secondary">Change Password</a>
-        </div>
-    </div>
-    {% endif %}
-</div>
-
-
-{% endblock %} {% endcomment %}
-
-
-
 
 {% block content %}
 
@@ -165,6 +106,13 @@
                                         <dd class="col-sm-8">
                                             {{ profile.patient.medical_history|default:"No medical history recorded"|linebreaks }}
                                         </dd>
+
+                                        <dt class="col-sm-5">Last Checkup</dt>
+                                        {% if profile.patient.last_checkup %}
+                                            <dd class="col-sm-7">{{ profile.patient.last_checkup }}</dd>
+                                        {% else %}
+                                            <dd class="col-sm-7">-</dd>
+                                        {% endif %}
                                     </dl>
                                 </div>
                             </div>

@@ -46,6 +46,7 @@ urlpatterns = [
     path('video_chat/<int:room_id>/', views.video_chat, name='video_chat'),
     path("doctor_category/<str:cat_name>/", views.doctor_category, name="doctor_category"), 
     path("appointment_details/<int:appoint_id>/", views.appointment_details, name="appointment_details"),
+    path("about/", views.about, name="about"),
 ]
 
 

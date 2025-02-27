@@ -26,6 +26,9 @@
                 {% endif %}
             </ul>
             <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'about' %}">About Us</a>
+                </li>
                 {% if user.is_authenticated %}
                     {% if user.user_type == "doctor" %}
                         <li class="nav-item">

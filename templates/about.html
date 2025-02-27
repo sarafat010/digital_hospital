@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}About HP Healthcare{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="about-hero bg-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <h1 class="display-4 mb-4">About HP Healthcare</h1>
+                <p class="lead">Your Trusted Partner in Health & Wellness</p>
+                <div class="d-flex gap-3 mt-4">
+                    <a href="#contact" class="btn btn-light btn-lg">Contact Us</a>
+                    <a href="#services" class="btn btn-outline-light btn-lg">Our Services</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="{% static 'images/medical_team.jpeg' %}" 
+                     alt="Modern Hospital Facility" 
+                     class="img-fluid rounded-3 shadow">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Core Values -->
+<section class="py-5 bg-light" id="values">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-md-6">
+                <h2 class="mb-4">Our Mission</h2>
+                <p class="text-muted fs-5">To deliver exceptional healthcare through advanced technology, compassionate care, and community-focused services, making quality medical treatment accessible to all.</p>
+            </div>
+            <div class="col-md-6">
+                <h2 class="mb-4">Our Vision</h2>
+                <p class="text-muted fs-5">To revolutionize healthcare delivery through innovation while maintaining the human touch in medical services.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Key Differentiators -->
+<section class="py-5" id="why-us">
+    <div class="container">
+        <h2 class="text-center mb-5">Why Choose HP Healthcare?</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-hover">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-award fa-3x text-primary mb-3"></i>
+                        <h5>Accredited Excellence</h5>
+                        <p class="text-muted">NABH Accredited facility with ISO certifications</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-hover">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-clock fa-3x text-primary mb-3"></i>
+                        <h5>24/7 Availability</h5>
+                        <p class="text-muted">Round-the-clock emergency & critical care services</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-hover">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-user-friends fa-3x text-primary mb-3"></i>
+                        <h5>Patient-Centric Care</h5>
+                        <p class="text-muted">Personalized treatment plans and health management</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Services & Specialties -->
+<section class="py-5 bg-light" id="services">
+    <div class="container">
+        <h2 class="text-center mb-5">Our Medical Services</h2>
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="service-card bg-white p-4 rounded-3 h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-heartbeat fa-2x text-primary me-3"></i>
+                        <h5 class="mb-0">Cardiac Care</h5>
+                    </div>
+                    <p class="text-muted">Advanced cardiology services including angioplasty, bypass surgery, and non-invasive diagnostics.</p>
+                </div>
+            </div>
+            <!-- Repeat similar blocks for other services -->
+        </div>
+    </div>
+</section>
+
+<!-- Organizational Structure -->
+<section class="py-5" id="organization">
+    <div class="container">
+        <h2 class="text-center mb-5">Hospital Structure</h2>
+        <div class="org-chart">
+            <div class="org-row">
+                <div class="org-node bg-primary text-white">
+                    <h5>Board of Directors</h5>
+                </div>
+            </div>
+            <div class="org-connector"></div>
+            <div class="org-row">
+                <div class="org-node bg-info text-white">
+                    <h5>Executive Committee</h5>
+                </div>
+            </div>
+            <div class="org-connector"></div>
+            <div class="org-row">
+                <div class="d-flex justify-content-center gap-4">
+                    <div class="org-department">
+                        <div class="org-node bg-white border-primary">
+                            <h6>Medical Services</h6>
+                            <ul class="list-unstyled">
+                                <li>Consultants</li>
+                                <li>Nursing</li>
+                                <li>Therapy</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- Add other departments -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section class="py-5 bg-dark text-white" id="contact">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-4">
+                <h3>HP Healthcare</h3>
+                <p class="text-muted">Committed to Excellence in Healthcare</p>
+                <div class="mt-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#services" class="text-white text-decoration-none">Services</a></li>
+                        <li><a href="#organization" class="text-white text-decoration-none">Organization</a></li>
+                        <li><a href="#contact" class="text-white text-decoration-none">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <h5>Contact Information</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-3">
+                        <i class="fas fa-map-marker-alt me-2"></i>
+                        123 Health Street, Medicity
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-phone-alt me-2"></i>
+                        +91 98765 43210
+                    </li>
+                    <li class="mb-3">
+                        <i class="fas fa-envelope me-2"></i>
+                        contact@hphc.com
+                    </li>
+                </ul>
+            </div>
+            <div class="col-lg-4">
+                <h5>Emergency Contacts</h5>
+                <div class="alert alert-danger">
+                    <i class="fas fa-ambulance me-2"></i>
+                    24/7 Emergency: 108
+                </div>
+                <div class="social-links mt-4">
+                    <a href="#" class="btn btn-outline-light btn-sm me-2"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="btn btn-outline-light btn-sm me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="btn btn-outline-light btn-sm me-2"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats & Accreditation -->
+<div class="bg-primary text-white py-4">
+    <div class="container">
+        <div class="row text-center g-4">
+            <div class="col">
+                <h3>25+</h3>
+                <p>Years Experience</p>
+            </div>
+            <div class="col">
+                <h3>150+</h3>
+                <p>Expert Doctors</p>
+            </div>
+            <div class="col">
+                <h3>NABH</h3>
+                <p>Accredited</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .shadow-hover {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .shadow-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.15)!important;
+    }
+    .org-chart {
+        position: relative;
+        padding: 2rem 0;
+    }
+    .org-node {
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        text-align: center;
+        margin: 0 auto;
+        max-width: 300px;
+    }
+    .org-connector {
+        height: 40px;
+        width: 2px;
+        background: #dee2e6;
+        margin: 0 auto;
+    }
+    .org-department {
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 0.5rem;
+    }
+</style>
+{% endblock %}

@@ -1,50 +1,5 @@
 {% extends 'base.html' %}
 
-{% comment %} {% block title %} reviews - PH HealthCare{% endblock %}
-
-{% block content %}
-<h2 class="mb-4">Rate and review doctor</h2>
-
-<div class="row g-4">
-    {% for review in reviews %}
-        <div class="col-md-4">
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8">
-                            <h5 class="card-title">
-                            {% if review %}
-                                <ul>
-                                    
-                                        <li>
-                                            <strong>Patient:</strong> {{ review.patient.user.get_full_name }}<br>
-                                            <strong>Doctor:</strong> {{ review.doctor.user.get_full_name }}<br>
-                                            <strong>Rating:</strong> {{ review.rating }}<br>
-                                            <strong>Comment:</strong> {{ review.comment }}<br>
-                                            <strong>Time:</strong> {{ review.created_at }}<br>
-                                        </li>
-                                        
-                                </ul>
-                            {% else %}
-                                <p>No review found</p>
-                            {% endif %}
-                        </div>
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
-    {% empty %}
-        <div class="col">
-            <p class="text-center">No reviews available at the moment.</p>
-        </div>
-    {% endfor %}
-</div>
-{% endblock %} {% endcomment %}
-
-
-
-
 {% block title %}Reviews - PH HealthCare{% endblock %}
 
 {% block content %}
@@ -59,7 +14,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <span class="badge bg-primary rounded-pill">
-                                    {{ review.rating }} <i class="fas fa-star"></i>
+                                    {{ review.rating }} <i class="fas fa-star">rating</i>
                                 </span>
                             </div>
                             <small class="text-muted">{{ review.created_at|date:"M d, Y" }}</small>

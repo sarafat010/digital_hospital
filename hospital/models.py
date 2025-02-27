@@ -83,6 +83,7 @@ class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='doctor_profile')
     specialization = models.ManyToManyField(Specialization, blank=True, related_name='doctor_specialization')
     qualifications = models.TextField(blank=True)
+    experience = models.IntegerField(blank=True, default=0)
     consultation_fee = models.DecimalField(max_digits=10, decimal_places=2, default=500)
     is_active = models.BooleanField(default=True)
     profile_picture = models.ImageField(upload_to="doctor_profile/", default='default_profile_pic.jpg')
@@ -104,6 +105,7 @@ class Patient(models.Model):
         ('other', 'Other')
     ])
     medical_history = models.TextField(blank=True)
+    last_checkup = models.DateField(null=True, blank=True)
 
 
     def __str__(self):

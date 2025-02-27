@@ -1,58 +1,6 @@
 
 {% extends 'base.html' %}
 
-{% comment %} {% block title %}Doctor Dashboard - PH HealthCare{% endblock %}
-
-{% block content %}
-<h2 class="mb-4">Doctor Dashboard</h2>
-
-<div class="row">
-    <div class="col-md-8">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Upcoming Appointments</h5>
-            </div>
-            <div class="card-body">
-                {% for appointment in appointments %}
-                    {% if appointment.status == 'confirmed' %}
-                        {% include 'appointment_card.html' with appointment=appointment %}
-                    {% endif %}
-                {% empty %}
-                    <p class="text-center">No upcoming appointments.</p>
-                {% endfor %}
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Quick Stats</h5>
-            </div>
-            <div class="card-body">
-                <p><strong>Total Patients:</strong> {{ total_patients }}</p>
-                <p><strong>Today's Appointments:</strong> <a href="{% url "today_appointments" doctor.id %}" class="btn btn-success">See details</a></p>
-                <p><strong>Average Rating:</strong> {{ rating }} </p>
-            </div>
-        </div>
-    </div>
-
-    <div class="col-md-4">
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5 class="card-title mb-0">Your profile</h5>
-            </div>
-            <div class="card-body">
-                <a href="{% url 'doctor_profile' doctor.user.id %}">Profile</a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
- {% endcomment %}
-
-
-
 {% block content %}
 
 <div class="container-fluid py-4">
@@ -131,7 +79,7 @@
                             </div>
                             <a href="{% url 'today_appointments' doctor.id %}" 
                                class="btn btn-sm btn-primary d-flex align-items-center">
-                               <i class="bi bi-arrow-right"></i>
+                               <i class="bi bi-arrow-right">See</i>
                             </a>
                         </div>
 
@@ -155,9 +103,9 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="{% url 'create_appointment' doctor.id %}" 
+                        <a href="{% url 'dashboard' %}" 
                            class="btn btn-outline-primary d-flex justify-content-between align-items-center">
-                           Create Appointment
+                           Video Conference Room
                            <i class="bi bi-plus-circle"></i>
                         </a>
                         <a href="{% url 'show_review' doctor.id %}" 

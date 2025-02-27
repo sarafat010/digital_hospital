@@ -1,27 +1,3 @@
-{% comment %} 
-<div class="card h-100">
-    <div class="card-body">
-        {% if doctor.profile_picture %}
-            <img src="{{ doctor.profile_picture.url }}" class="img-thumbnail rounded-squire" alt="Profile Image" width="150" height="150">
-            {% else %}
-            <img src="https://via.placeholder.com/150" class="img-thumbnail rounded-squire" alt="Default Profile Image">
-        {% endif %}
-    
-        <h5 class="card-title">Dr. {{ doctor.user.get_full_name }}</h5> 
-        <h6 class="card-subtitle mb-2 text-muted"><strong>Specialized:</strong> {% for name in doctor.specialization.all %}
-            {{ name }}{% if not forloop.last %}, {% endif %}
-            {% endfor %}
-        </h6>
-        <p class="card-text">
-            
-            <strong>Qualification:</strong> {{ doctor.qualifications }}<br>
-            <strong>Consultation Fee:</strong> ${{ doctor.consultation_fee }}
-        </p>
-        <a href="{% url 'doctor_details' doctor.id %}" class="btn btn-outline-success btn-lg px-4">View details</a>
-    </div>
-</div>
-
- {% endcomment %}
 
  <div class="card h-100 border-0 shadow-hover">
     <div class="card-body p-4">

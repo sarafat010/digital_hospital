@@ -58,7 +58,7 @@ class AppointmentSlotForm(forms.ModelForm):
 class DoctorProfileForm(forms.ModelForm):
     class Meta:
         model = Doctor
-        fields = ['specialization', 'qualifications', 'consultation_fee', 'profile_picture']
+        fields = ['specialization', 'qualifications', 'experience', 'consultation_fee', 'profile_picture']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
