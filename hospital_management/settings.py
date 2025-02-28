@@ -26,9 +26,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-iz59k!0kpk8f4*)(#zsf%8%hxuv%qj7d+0pi90#r4gcu%!cz1*"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "True") == "True"
+DEBUG = True
 
-ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "hospital",
     "channels",
     "videoconference",
+    "whitenoise.runserver_nostatic",
 ]
 
 MIDDLEWARE = [
@@ -84,8 +85,14 @@ WSGI_APPLICATION = "hospital_management.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+        #"ENGINE": "django.db.backends.sqlite3",
+        #"NAME": BASE_DIR / "db.sqlite3",
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": "railway",
+        "USER": "postgres",
+        "PASSWORD": os.environ["DB_PASSWORD_YO"],
+        "HOST": "shortline.proxy.rlwy.net",
+        "PORT": "39901",
     }
 }
 
