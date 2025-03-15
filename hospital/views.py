@@ -225,9 +225,10 @@ def appointment_slot_list(request):
 
 
 def doctor_list(request):
-    if request.user is authenticate:
+    if request.user.is_authenticated:
         doctors = Doctor.objects.all()
         specializations = Specialization.objects.all()
+        return render(request, "doctor_list.html", {"doctors":doctors, "specializations":specializations})
     else:
         return redirect("login")
 
@@ -236,7 +237,7 @@ def doctor_list(request):
 
 
 def search_doctor(request):
-    if request.user is authenticate:
+    if request.user.is_authenticated:
         if request.method == "POST":
             searched = request.POST.get("searched")
             

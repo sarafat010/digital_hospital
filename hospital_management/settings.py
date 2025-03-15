@@ -91,8 +91,8 @@ DATABASES = {
         "NAME": "railway",
         "USER": "postgres",
         "PASSWORD": os.environ["DB_PASSWORD_YO"],
-        "HOST": "shortline.proxy.rlwy.net",
-        "PORT": "39901",
+        "HOST": "gondola.proxy.rlwy.net",
+        "PORT": "26463",
     }
 }
 

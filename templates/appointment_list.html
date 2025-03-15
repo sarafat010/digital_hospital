@@ -45,12 +45,14 @@
                     </div>
                     <div class="card-footer bg-white">
                         <div class="row g-2">
+                            {% if user.user_type == "doctor" %}
                             <div class="col-6">
                                 <a href="{% url 'update_appointment' appointment.id %}" 
                                    class="btn btn-outline-secondary w-100">
                                     Reschedule
                                 </a>
                             </div>
+                            {% endif %}
                             <div class="col-6">
                                 {% if not appointment.payment_status %}
                                 <form action="{% url 'initiate_payment' appointment.id %}" method="POST">
