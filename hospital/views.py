@@ -223,26 +223,32 @@ def appointment_slot_list(request):
 
     return render(request, "appointment_slot_list.html", {"slot_list":slot})
 
-@login_required
+
 def doctor_list(request):
-    doctors = Doctor.objects.all()
-    specializations = Specialization.objects.all()
+    if request.user is authenticate:
+        doctors = Doctor.objects.all()
+        specializations = Specialization.objects.all()
+    else:
+        return redirect("login")
 
 
     return render(request, "doctor_list.html", {"doctors":doctors, "specializations":specializations})
 
-@login_required
+
 def search_doctor(request):
-    if request.method == "POST":
-        searched = request.POST.get("searched")
-        
-        doctors = Doctor.objects.filter(Q(user__first_name__icontains=searched) | Q(user__last_name__icontains=searched) | Q(specialization__name__icontains=searched) | Q(specialization__description__icontains=searched)).distinct()
-        if doctors:
-            return render(request, "search_doctor.html", {"doctors":doctors})
+    if request.user is authenticate:
+        if request.method == "POST":
+            searched = request.POST.get("searched")
+            
+            doctors = Doctor.objects.filter(Q(user__first_name__icontains=searched) | Q(user__last_name__icontains=searched) | Q(specialization__name__icontains=searched) | Q(specialization__description__icontains=searched)).distinct()
+            if doctors:
+                return render(request, "search_doctor.html", {"doctors":doctors})
+            else:
+                return render(request, "search_doctor.html", {})
         else:
             return render(request, "search_doctor.html", {})
-    else:
-        return render(request, "search_doctor.html", {})
+    else: 
+        return redirect("login")
 
 
 """ @login_required
@@ -889,7 +895,7 @@ def doctor_category(request, cat_name):
     
     return render(request, "doctor_category.html", {"doctors":doctors, "cat_name":cat_name})
 
-@login_required
+
 def about(request):
     return render(request, "about.html", {})
         
