@@ -28,8 +28,8 @@ SECRET_KEY = "django-insecure-iz59k!0kpk8f4*)(#zsf%8%hxuv%qj7d+0pi90#r4gcu%!cz1*
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['hospital-web-production-a457.up.railway.app', 'https://hospital-web-production-a457.up.railway.app']
-CSRF_TRUSTED_ORIGINS = ['hospital-web-production-a457.up.railway.app', 'https://hospital-web-production-a457.up.railway.app']
+ALLOWED_HOSTS = []
+#CSRF_TRUSTED_ORIGINS = ['hospital-web-production-a457.up.railway.app', 'https://hospital-web-production-a457.up.railway.app']
 
 
 # Application definition
@@ -92,8 +92,8 @@ DATABASES = {
         "NAME": "railway",
         "USER": "postgres",
         "PASSWORD": os.environ["DB_PASSWORD_YO"],
-        "HOST": "gondola.proxy.rlwy.net",
-        "PORT": "26463",
+        "HOST": "shortline.proxy.rlwy.net",
+        "PORT": "39901",
     }
 }
 
